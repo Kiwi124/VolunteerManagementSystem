@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Event{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Event - {{ event.programme.programme_name }}</h2>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'programmes:event_edit' event.event_id %}">Edit</a>
+</div>
+<p>{{ event.event_description }}</p>
+<p><strong>Start:</strong> {{ event.start_date }} &middot; <strong>End:</strong> {{ event.end_date }}</p>
+<p><strong>Status:</strong> {{ event.status.status }} &middot; <strong>Capacity:</strong> {{ event.capacity }}</p>
+<p><strong>Required Skills:</strong>
+    {% for skill in event.required_skills.all %}{{ skill.skill_name }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}
+</p>
+
+<h4 class="mt-4">Assigned Volunteers ({{ assignments.count }}/{{ event.capacity }})</h4>
+<table class="table table-striped">
+    <thead><tr><th>Volunteer</th><th>Role</th><th>Attended</th><th>Reminder Sent</th><th></th></tr></thead>
+    <tbody>
+    {% for a in assignments %}
+        <tr>
+            <td>{{ a.user.person }}</td>
+            <td>{{ a.volunteer_role }}</td>
+            <td>
+                <form method="post" action="{% url 'programmes:assignment_attendance_toggle' a.assignment_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm {% if a.attendance %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                        {% if a.attendance %}Yes{% else %}No{% endif %}
+                    </button>
+                </form>
+            </td>
+            <td>{% if a.notify_flag %}Yes{% else %}No{% endif %}</td>
+            <td>
+                <form method="post" action="{% url 'programmes:assignment_remove' a.assignment_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">No volunteers assigned yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h5>Assign a Volunteer</h5>
+<form method="post" action="{% url 'programmes:assignment_add' event.event_id %}" class="row g-2" novalidate>
+    {% csrf_token %}
+    <div class="col-auto">{{ assignment_form.user }}</div>
+    <div class="col-auto">{{ assignment_form.volunteer_role }}</div>
+    <div class="col-auto"><button type="submit" class="btn btn-primary">Assign</button></div>
+</form>
+{% endblock %}

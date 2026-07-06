@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}{{ programme.programme_name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>{{ programme.programme_name }}</h2>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'programmes:programme_edit' programme.programme_id %}">Edit</a>
+</div>
+<p>{{ programme.programme_description }}</p>
+<p><strong>Location:</strong> {{ programme.location }} &middot; <strong>Status:</strong> {{ programme.status.status }}</p>
+<p><strong>Dates:</strong> {{ programme.start_date }} - {{ programme.end_date }} &middot; <strong>Cost:</strong> £{{ programme.programme_cost }}</p>
+
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+    <h4>Events</h4>
+    <a class="btn btn-primary btn-sm" href="{% url 'programmes:event_create' programme.programme_id %}">New Event</a>
+</div>
+<table class="table table-striped">
+    <thead><tr><th>Start</th><th>End</th><th>Status</th><th>Capacity</th><th></th></tr></thead>
+    <tbody>
+    {% for e in events %}
+        <tr>
+            <td>{{ e.start_date }}</td>
+            <td>{{ e.end_date }}</td>
+            <td>{{ e.status.status }}</td>
+            <td>{{ e.capacity }}</td>
+            <td><a href="{% url 'programmes:event_detail' e.event_id %}">View</a></td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">No events scheduled yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

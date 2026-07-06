@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Impact Dashboard{% endblock %}
+{% block content %}
+<h2>Impact Dashboard</h2>
+<table class="table table-striped w-auto">
+    <tbody>
+        <tr><th>Total Programmes</th><td>{{ metrics.total_programmes }}</td></tr>
+        <tr><th>Total Events</th><td>{{ metrics.total_events }}</td></tr>
+        <tr><th>Total Volunteers</th><td>{{ metrics.total_volunteers }}</td></tr>
+        <tr><th>Total Assignments</th><td>{{ metrics.total_assignments }}</td></tr>
+        <tr><th>Attendance Rate</th><td>{{ metrics.attendance_rate }}%</td></tr>
+        <tr><th>Average Satisfaction Score</th><td>{{ metrics.average_satisfaction }}%</td></tr>
+    </tbody>
+</table>
+{% endblock %}

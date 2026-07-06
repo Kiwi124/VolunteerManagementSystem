@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ report.report_name }}{% endblock %}
+{% block content %}
+<h2>{{ report.report_name }}</h2>
+<p><strong>Programme:</strong> {{ report.programme.programme_name }} &middot; <strong>Date:</strong> {{ report.report_date }}</p>
+<p><strong>Satisfaction Score:</strong> {{ report.satisfaction_score }}%</p>
+
+<h4 class="mt-4">Programme Metrics</h4>
+<table class="table table-striped w-auto">
+    <tbody>
+        <tr><th>Events</th><td>{{ metrics.events_count }}</td></tr>
+        <tr><th>Volunteers Assigned</th><td>{{ metrics.unique_volunteers }}</td></tr>
+        <tr><th>Total Assignments</th><td>{{ metrics.total_assignments }}</td></tr>
+        <tr><th>Attended</th><td>{{ metrics.attended_count }}</td></tr>
+        <tr><th>Attendance Rate</th><td>{{ metrics.attendance_rate }}%</td></tr>
+    </tbody>
+</table>
+{% endblock %}
