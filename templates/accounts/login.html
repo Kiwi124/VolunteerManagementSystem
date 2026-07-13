@@ -1,24 +1,30 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Login{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-4">
-        <h3 class="mb-3">Sign in</h3>
-        <form method="post">
-            {% csrf_token %}
-            {% if form.errors %}
-                <div class="alert alert-danger">Invalid email or password.</div>
-            {% endif %}
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                {{ form.username }}
+    <div class='grid grid-cols-1 md:grid-cols-7 items-center  w-full h-screen bg-base-100'>
+        <div class='flex justify-center w-full h-screen bg-radial-[at_20%_30%] from-blue-900/50 via-indigo-800/50 to-sky-300/50 to-95% col-span-1 md:col-span-4'>
+            <img src="{% static 'images/logo.svg' %}" alt="Urban Connect Logo" class="block w-full max-w-md h-auto object-contain drop-shadow-xl/40">
+        </div>
+
+        <div class='relative z-10 flex justify-center items-center w-110% h-screen bg-base-100 rounded-l-[5rem] overflow-hidden md:-ml-18 drop-shadow-xl col-span-1 md:col-span-3'>
+            <div class='flex justify-center items-center w-full h-screen bg-base-100'>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class='flex flex-col gap-4 justify-center items-center'>
+                        <c-lb.fieldset class='px-8 w-96 max-w-md'>
+                            <c-lb.label class="text-base-content mb-0 text-sm">Email:</c-lb.label>
+                            <c-lb.input variant="primary" type="text" placeholder="john.doe@example.com" class='text-base-content/70' />
+                        </c-lb.fieldset>
+                        <c-lb.fieldset class='px-8 w-96 max-w-md'>
+                            <c-lb.label class="text-base-content mb-0 text-sm">Password:</c-lb.label>
+                            <c-lb.input variant="primary" type="password" placeholder="••••••••" class='text-base-content/70' />
+                        </c-lb.fieldset>
+                        <c-lb.button type="submit" variant="primary" size='md' class='px-16 mt-8'>Login</c-lb.button>
+                    </div>
+                </form>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                {{ form.password }}
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+        </div>
     </div>
-</div>
+
 {% endblock %}
