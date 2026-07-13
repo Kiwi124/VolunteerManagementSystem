@@ -1,11 +1,7 @@
 UrbanConnect Volunteer Management System
 
 *******************************************
-This is a university project. This        /
-application is not meant for a production /
-environment. Please carefully read this   /
-to setup your local environment correctly /
-to prevent any issues.                    /
+This is a university project. This application is not meant for a production environment. Please carefully read this to setup your local environment correctly to prevent any issues.                    
 *******************************************
 
 Setup Instructions
