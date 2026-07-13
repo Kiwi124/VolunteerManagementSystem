@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'programmes',
     'impact',
     'notifications',
+    'django_cotton',
+    'labb'
+    'labbicons'
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -93,7 +96,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'vmsdb', # Change this value to your local DB
         'USER': 'root',  # Change this value to your local DB user
-        'PASSWORD': 'root', # Change this value to your local DB password
+        'PASSWORD': 'msqMyf4tcAt1!', # Change this value to your local DB password
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
