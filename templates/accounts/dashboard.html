@@ -3,4 +3,53 @@
 {% block content %}
 <h2>Welcome, {{ user.person.forename }}</h2>
 <p class="text-muted">Role: {{ user.role.role_name }}</p>
+
+{% if user.role.role_name == 'Administrator' %}
+<hr>
+<h3>System Backup</h3>
+<form id="backup-form">
+    {% csrf_token %}
+    <button type="submit" id="backup-button" class="btn btn-warning">Run Backup</button>
+</form>
+<div class="progress mt-2" style="max-width: 300px; display: none;" id="backup-progress-wrapper">
+    <div class="progress-bar" id="backup-progress" role="progressbar" style="width: 0%">0%</div>
+</div>
+<div class="alert alert-success mt-2" id="backup-complete-message" style="display: none;">Backup complete.</div>
+
+<script>
+document.getElementById('backup-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    var button = document.getElementById('backup-button');
+    var wrapper = document.getElementById('backup-progress-wrapper');
+    var bar = document.getElementById('backup-progress');
+    var completeMessage = document.getElementById('backup-complete-message');
+    var csrfToken = event.target.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    button.disabled = true;
+    completeMessage.style.display = 'none';
+    wrapper.style.display = 'block';
+    bar.style.width = '0%';
+    bar.textContent = '0%';
+
+    var progress = 0;
+    var interval = setInterval(function () {
+        progress += 10;
+        bar.style.width = progress + '%';
+        bar.textContent = progress + '%';
+        if (progress >= 100) {
+            clearInterval(interval);
+            fetch('{% url "accounts:trigger_backup" %}', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+            }).then(function () {
+                wrapper.style.display = 'none';
+                completeMessage.style.display = 'block';
+                button.disabled = false;
+            });
+        }
+    }, 200);
+});
+</script>
+{% endif %}
 {% endblock %}

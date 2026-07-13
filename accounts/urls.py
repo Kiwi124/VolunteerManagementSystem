@@ -13,4 +13,5 @@ urlpatterns = [
     path('users/new/', views.user_create, name='user_create'),
     path('users/<int:user_id>/edit/', views.user_edit, name='user_edit'),
     path('audit-log/', views.audit_log_list, name='audit_log_list'),
+    path('backup/', views.trigger_backup, name='trigger_backup'),
 ]

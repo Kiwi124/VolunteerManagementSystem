@@ -1,8 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
+from accounts.audit import log_action
 from accounts.decorators import role_required
 from accounts.forms import EmailAuthenticationForm, UserRegistrationForm, UserStatusForm
 from accounts.models import AuditLog, Role, User
@@ -52,3 +55,9 @@ def user_edit(request, user_id):
 def audit_log_list(request):
     logs = AuditLog.objects.select_related('user').all()[:200]
     return render(request, 'accounts/audit_log_list.html', {'logs': logs})
+
+@role_required(Role.ADMIN)
+@require_POST
+def trigger_backup(request):
+    log_action('BACKUP', 'System')
+    return JsonResponse({'status': 'ok'})
