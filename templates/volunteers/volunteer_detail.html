@@ -1,110 +1,190 @@
 {% extends 'base.html' %}
 {% block title %}{{ volunteer.person }}{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>{{ volunteer.person }}</h2>
-    <a class="btn btn-outline-secondary btn-sm" href="{% url 'volunteers:person_edit' volunteer.user_id %}">Edit Details</a>
-</div>
-<div class="row mb-4">
-    <div class="col-md-6">
-        <p><strong>Email:</strong> {{ volunteer.email }}</p>
-        <p><strong>Phone:</strong> {{ volunteer.person.phone_number }}</p>
-        <p><strong>Address:</strong> {{ volunteer.person.address }}</p>
-        <p><strong>Emergency Contact:</strong> {{ volunteer.person.emergency_contact }}</p>
-        <p><strong>Notification Preference:</strong> {{ volunteer.person.get_notification_preference_display }}</p>
-        <p><strong>Registered:</strong> {{ volunteer.person.registration_date }}</p>
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">{{ volunteer.person }}</c-lb.text>
+    <div>
+        <c-lb.button as="a" href="{% url 'volunteers:person_edit' volunteer.user_id %}" variant="primary" icon="rmx.edit" size="sm">Edit Details</c-lb.button>
+        <c-lb.button as="a" href="{% url 'volunteers:volunteer_list' %}" icon="rmx.arrow-left" variant="accent" size="sm">Back</c-lb.button>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h4>DBS Status</h4>
-        <table class="table table-sm">
-            <thead><tr><th>Status</th><th>Expiry</th></tr></thead>
-            <tbody>
-            {% for dbs in dbs_statuses %}
-                <tr><td>{{ dbs.get_dbs_status_display }}</td><td>{{ dbs.dbs_expiry|default:"-" }}</td></tr>
-            {% empty %}
-                <tr><td colspan="2">No DBS record yet.</td></tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <form method="post" action="{% url 'volunteers:dbs_status_add' volunteer.user_id %}" novalidate>
+
+
+<div class="mb-6 rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Contact Details</c-lb.text>
+    <div class="divider m-0"></div>
+    <div class="grid gap-3 md:grid-cols-2">
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Email:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ volunteer.email }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Phone:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ volunteer.person.phone_number }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Address:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ volunteer.person.address }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Emergency Contact:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ volunteer.person.emergency_contact }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Notification Preference:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ volunteer.person.get_notification_preference_display }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Registered:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ volunteer.person.registration_date }}</c-lb.text>
+        </div>
+    </div>
+</div>
+
+<div class="grid gap-6 xl:grid-cols-3">
+    <div class="rounded-box bg-base-100 p-4 shadow-sm h-full flex flex-col">
+        <c-lb.text size="lg" class="font-semibold mb-3">DBS Status</c-lb.text>
+        <div class="divider m-0"></div>
+        <div class="overflow-x-auto">
+            <table class="table table-sm w-full">
+                <thead><tr><th>Status</th><th>Expiry</th></tr></thead>
+                <tbody>
+                {% for dbs in dbs_statuses %}
+                    <tr><td>{{ dbs.get_dbs_status_display }}</td><td>{{ dbs.dbs_expiry|default:"-" }}</td></tr>
+                {% empty %}
+                    <tr><td colspan="2">No DBS record yet.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <form method="post" action="{% url 'volunteers:dbs_status_add' volunteer.user_id %}" novalidate class="mt-6 space-y-2 flex flex-col">
+            <c-lb.text size="lg" class="font-semibold mb-3">Add New DBS Record</c-lb.text>
+            <div class="divider m-0"></div>
             {% csrf_token %}
-            {% for field in dbs_form %}
-                <div class="mb-2">
-                    <label class="form-label small">{{ field.label }}</label>
-                    {{ field }}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-sm btn-primary">Add DBS Record</button>
+            <c-lb.fieldset>
+                <c-lb.label class="text-base-content mb-0 text-sm">{{ dbs_form.dbs_status.label }}</c-lb.label>
+                <c-lb.select name="{{ dbs_form.dbs_status.name }}" class="w-full">
+                    {% for value, label in dbs_form.dbs_status.field.choices %}
+                        <option value="{{ value }}" {% if dbs_form.dbs_status.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </c-lb.select>
+            </c-lb.fieldset>
+            <c-lb.fieldset>
+                <c-lb.label class="text-base-content mb-0 text-sm">{{ dbs_form.dbs_expiry.label }}</c-lb.label>
+                <c-lb.input type="date" name="{{ dbs_form.dbs_expiry.name }}" value="{{ dbs_form.dbs_expiry.value|default:'' }}" class="w-full" />
+            </c-lb.fieldset>
+            <div class="mt-6 flex justify-center">
+                <c-lb.button type="submit" variant="primary" size="sm">Add DBS Record</c-lb.button>
+            </div>
         </form>
     </div>
 
-    <div class="col-md-4">
-        <h4>Availability</h4>
-        <table class="table table-sm">
-            <thead><tr><th>Day</th><th>From</th><th>To</th><th></th></tr></thead>
-            <tbody>
-            {% for a in availabilities %}
-                <tr>
-                    <td>{{ a.get_day_of_week_display }}</td>
-                    <td>{{ a.start_time }}</td>
-                    <td>{{ a.end_time }}</td>
-                    <td>
-                        <form method="post" action="{% url 'volunteers:availability_delete' a.availability_id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
-                        </form>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr><td colspan="4">No availability recorded.</td></tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <form method="post" action="{% url 'volunteers:availability_add' volunteer.user_id %}" novalidate>
+    <div class="rounded-box bg-base-100 p-4 shadow-sm h-full flex flex-col">
+        <c-lb.text size="lg" class="font-semibold mb-3">Availability</c-lb.text>
+        <div class="divider m-0"></div>
+        <div class="overflow-x-auto">
+            <table class="table table-sm w-full">
+                <thead><tr><th>Day</th><th>From</th><th>To</th><th></th></tr></thead>
+                <tbody>
+                {% for a in availabilities %}
+                    <tr>
+                        <td>{{ a.get_day_of_week_display }}</td>
+                        <td>{{ a.start_time }}</td>
+                        <td>{{ a.end_time }}</td>
+                        <td>
+                            <form method="post" action="{% url 'volunteers:availability_delete' a.availability_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">No availability recorded.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        
+        <form method="post" action="{% url 'volunteers:availability_add' volunteer.user_id %}" novalidate class="mt-4 space-y-2 flex flex-col">
+            <c-lb.text size="lg" class="font-semibold mb-3">Add New Availability</c-lb.text>
+            <div class="divider m-0"></div>
             {% csrf_token %}
-            {% for field in availability_form %}
-                <div class="mb-2">
-                    <label class="form-label small">{{ field.label }}</label>
-                    {{ field }}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-sm btn-primary">Add Availability</button>
+            <c-lb.fieldset>
+                <c-lb.label class="text-base-content mb-0 text-sm">{{ availability_form.day_of_week.label }}</c-lb.label>
+                <c-lb.select name="{{ availability_form.day_of_week.name }}" class="w-full">
+                    {% for value, label in availability_form.day_of_week.field.choices %}
+                        <option value="{{ value }}" {% if availability_form.day_of_week.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </c-lb.select>
+            </c-lb.fieldset>
+            <div class="grid grid-cols-2 gap-4">
+                <c-lb.fieldset>
+                    <c-lb.label class="text-base-content mb-0 text-sm">{{ availability_form.start_time.label }}</c-lb.label>
+                    <c-lb.input type="time" name="{{ availability_form.start_time.name }}" value="{{ availability_form.start_time.value|default:'' }}" class="w-full" />
+                </c-lb.fieldset>
+                <c-lb.fieldset>
+                    <c-lb.label class="text-base-content mb-0 text-sm">{{ availability_form.end_time.label }}</c-lb.label>
+                    <c-lb.input type="time" name="{{ availability_form.end_time.name }}" value="{{ availability_form.end_time.value|default:'' }}" class="w-full" />
+                </c-lb.fieldset>
+            </div>
+            <div class="mt-6 flex justify-center">
+                <c-lb.button type="submit" variant="primary" size="sm">Add Availability</c-lb.button>
+            </div>
         </form>
     </div>
 
-    <div class="col-md-4">
-        <h4>Skills</h4>
-        <table class="table table-sm">
-            <thead><tr><th>Skill</th><th>Level</th><th></th></tr></thead>
-            <tbody>
-            {% for s in skills %}
-                <tr>
-                    <td>{{ s.skill.skill_name }}</td>
-                    <td>{{ s.get_skill_level_display }}</td>
-                    <td>
-                        <form method="post" action="{% url 'volunteers:volunteer_skill_delete' s.volunteer_skill_id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
-                        </form>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr><td colspan="3">No skills recorded.</td></tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <form method="post" action="{% url 'volunteers:volunteer_skill_add' volunteer.user_id %}" novalidate>
+    <div class="rounded-box bg-base-100 p-4 shadow-sm h-full flex flex-col">
+        <c-lb.text size="lg" class="font-semibold mb-3">Skills</c-lb.text>
+        <div class="divider m-0"></div>
+        <div class="overflow-x-auto">
+            <table class="table table-sm w-full">
+                <thead><tr><th>Skill</th><th>Level</th><th></th></tr></thead>
+                <tbody>
+                {% for s in skills %}
+                    <tr>
+                        <td>{{ s.skill.skill_name }}</td>
+                        <td>{{ s.get_skill_level_display }}</td>
+                        <td>
+                            <form method="post" action="{% url 'volunteers:volunteer_skill_delete' s.volunteer_skill_id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3">No skills recorded.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <form method="post" action="{% url 'volunteers:volunteer_skill_add' volunteer.user_id %}" novalidate class="mt-4 space-y-2 flex flex-col">
+            <c-lb.text size="lg" class="font-semibold mb-3">Add New Skill</c-lb.text>
+            <div class="divider m-0"></div>
             {% csrf_token %}
-            {% for field in skill_form %}
-                <div class="mb-2">
-                    <label class="form-label small">{{ field.label }}</label>
-                    {{ field }}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn btn-sm btn-primary">Add Skill</button>
+            <c-lb.fieldset>
+                <c-lb.label class="text-base-content mb-0 text-sm">{{ skill_form.skill.label }}</c-lb.label>
+                <c-lb.select name="{{ skill_form.skill.name }}" class="w-full">
+                    {% for value, label in skill_form.skill.field.choices %}
+                        <option value="{{ value }}" {% if skill_form.skill.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </c-lb.select>
+            </c-lb.fieldset>
+            <c-lb.fieldset>
+                <c-lb.label class="text-base-content mb-0 text-sm">{{ skill_form.skill_level.label }}</c-lb.label>
+                <c-lb.select name="{{ skill_form.skill_level.name }}" class="w-full">
+                    {% for value, label in skill_form.skill_level.field.choices %}
+                        <option value="{{ value }}" {% if skill_form.skill_level.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </c-lb.select>
+            </c-lb.fieldset>
+            <div class="mt-6 flex justify-center">
+                <c-lb.button type="submit" variant="primary" size="sm">Add Skill</c-lb.button>
+            </div>
         </form>
     </div>
 </div>

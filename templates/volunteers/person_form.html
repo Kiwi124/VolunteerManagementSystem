@@ -1,16 +1,73 @@
 {% extends 'base.html' %}
 {% block title %}Edit Volunteer{% endblock %}
 {% block content %}
-<h2>Edit {{ volunteer.person }}</h2>
-<form method="post" novalidate>
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">Edit {{ volunteer.person }}</c-lb.text>
+    <c-lb.button as="a" href="{% url 'volunteers:volunteer_detail' volunteer.user_id %}" icon="rmx.arrow-left" variant="accent" size="sm">Back</c-lb.button>
+</div>
+
+<form method="post" novalidate class="w-full flex flex-col items-center">
     {% csrf_token %}
-    {% for field in form %}
-        <div class="mb-3">
-            <label class="form-label">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
-        </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Save</button>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="grid grid-cols-2 gap-4 flex-1 w-full mb-12">
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Forename</c-lb.label>
+            <c-lb.input type="text" name="{{ form.forename.name }}" value="{{ form.forename.value|default:'' }}" placeholder="John" class="w-full" />
+            {% if form.forename.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.forename.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Surname</c-lb.label>
+            <c-lb.input type="text" name="{{ form.surname.name }}" value="{{ form.surname.value|default:'' }}" placeholder="Smith" class="w-full" />
+            {% if form.surname.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.surname.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset class="col-span-2">
+            <c-lb.label class="text-base-content mb-0 text-sm">Address</c-lb.label>
+            <c-lb.textarea name="{{ form.address.name }}" class="w-full" rows="3">{{ form.address.value|default:'' }}</c-lb.textarea>
+            {% if form.address.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.address.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Phone number</c-lb.label>
+            <c-lb.input type="text" name="{{ form.phone_number.name }}" value="{{ form.phone_number.value|default:'' }}" placeholder="07123 456789" class="w-full" />
+            {% if form.phone_number.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.phone_number.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Emergency contact</c-lb.label>
+            <c-lb.input type="text" name="{{ form.emergency_contact.name }}" value="{{ form.emergency_contact.value|default:'' }}" placeholder="Jane Smith - 07123 456789" class="w-full" />
+            {% if form.emergency_contact.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.emergency_contact.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Notification preference</c-lb.label>
+            <c-lb.select name="{{ form.notification_preference.name }}" class="w-full">
+                {% for value, label in form.notification_preference.field.choices %}
+                    <option value="{{ value }}" {% if form.notification_preference.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </c-lb.select>
+            {% if form.notification_preference.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.notification_preference.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+    </div>
+
+    <c-lb.button type="submit" modifier="wide" variant="primary" size="md" class="mt-6 ">Save Changes</c-lb.button>
 </form>
 {% endblock %}

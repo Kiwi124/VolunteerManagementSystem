@@ -29,6 +29,12 @@ class Person(models.Model):
     def __str__(self):
         return f'{self.forename} {self.surname}'
 
+    @property
+    def initials(self):
+        forename_initial = (self.forename or '').strip()[:1]
+        surname_initial = (self.surname or '').strip()[:1]
+        return f'{forename_initial}{surname_initial}'.upper()
+
 class DBSStatus(models.Model):
     NOT_STARTED = 'NOT_STARTED'
     PENDING = 'PENDING'

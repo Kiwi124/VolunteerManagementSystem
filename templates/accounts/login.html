@@ -8,17 +8,35 @@
         </div>
 
         <div class='relative z-10 flex justify-center items-center w-110% h-screen bg-base-100 rounded-l-[5rem] overflow-hidden md:-ml-18 drop-shadow-xl col-span-1 md:col-span-3'>
-            <div class='flex justify-center items-center w-full h-screen bg-base-100'>
+            <div class='flex flex-col justify-center items-center w-full h-screen bg-base-100'>
+                <div class='flex flex-col justify-center items-center gap-2 mb-8'>
+                    <c-lb.text as="h1" size="4xl" variant="primary" class='text-white font-semibold tracking-wide'>Welcome Back</c-lb.text>
+                    <c-lb.text size="md" class='text-base-content/70'>Enter your email and password to access your account.</c-lb.text>
+                </div>
                 <form method="post">
                     {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger">Invalid email or password.</div>
+                    {% endif %}
                     <div class='flex flex-col gap-4 justify-center items-center'>
                         <c-lb.fieldset class='px-8 w-96 max-w-md'>
                             <c-lb.label class="text-base-content mb-0 text-sm">Email:</c-lb.label>
-                            <c-lb.input variant="primary" type="text" placeholder="john.doe@example.com" class='text-base-content/70' />
+                            <c-lb.input 
+                            variant="primary" 
+                            type="text" 
+                            name="{{form.username.name}}"
+                            placeholder="john.doe@example.com" 
+                            class='text-base-content/70' />
+                            
                         </c-lb.fieldset>
                         <c-lb.fieldset class='px-8 w-96 max-w-md'>
                             <c-lb.label class="text-base-content mb-0 text-sm">Password:</c-lb.label>
-                            <c-lb.input variant="primary" type="password" placeholder="••••••••" class='text-base-content/70' />
+                            <c-lb.input 
+                            variant="primary" 
+                            type="password" 
+                            name="{{form.password.name}}"
+                            placeholder="••••••••" 
+                            class='text-base-content/70' />
                         </c-lb.fieldset>
                         <c-lb.button type="submit" variant="primary" size='md' class='px-16 mt-8'>Login</c-lb.button>
                     </div>

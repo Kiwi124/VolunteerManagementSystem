@@ -1,32 +1,39 @@
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'accounts:dashboard' %}">UrbanConnect VIMS</a>
-        {% if user.is_authenticated %}
-        <div class="d-flex align-items-center">
-            <span class="navbar-text text-light me-3">{{ user.person }} &middot; {{ user.role.role_name }}</span>
-            {% if user.role.role_name in volunteer_manager_roles %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'volunteers:volunteer_list' %}">Volunteers</a>
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'volunteers:skill_list' %}">Skills</a>
-            {% endif %}
-            {% if user.role.role_name in programme_manager_roles %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'programmes:programme_list' %}">Programmes</a>
-            {% endif %}
-            {% if user.role.role_name in dashboard_viewer_roles %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'impact:dashboard' %}">Dashboard</a>
-            {% endif %}
-            {% if user.role.role_name in impact_manager_roles %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'impact:report_list' %}">Reports</a>
-            {% endif %}
-            {% if user.role.role_name == 'Administrator' %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'accounts:user_list' %}">Users</a>
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'accounts:audit_log_list' %}">Audit Log</a>
-            {% endif %}
-            <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-            </form>
+<c-lb.menu class="bg-base-100 rounded-box w-64 h-full shrink-0 shadow flex flex-col justify-start items-start gap-0">
+    <div>
+        <div class="flex items-center justify-center p-4 gap-4">
+            <c-lb.avatar placeholder initials="{{ user.person.initials }}" size="sm" bgColor="neutral" ring="true" ringColor="primary" rounded="full" />
+            <div>
+                <c-lb.text size="sm" class="text-base-content">{{ user.person }}</c-lb.text>
+                <c-lb.text size="sm" class="text-base-content/70">{{ user.role.role_name }}</c-lb.text>
+            </div>
         </div>
-        {% endif %}
+        <div class="divider m-0"></div>
     </div>
-</nav>
+    <c-lb.menu.item href="{% url 'accounts:dashboard' %}" title="Home" />
+    {% if user.role.role_name in volunteer_manager_roles %}
+        <c-lb.menu.item href="{% url 'volunteers:volunteer_list' %}" title="Volunteers" />
+        <c-lb.menu.item href="{% url 'volunteers:skill_list' %}" title="Skills" />
+    {% endif %}
+    {% if user.role.role_name in programme_manager_roles %}
+        <c-lb.menu.item href="{% url 'programmes:programme_list' %}" title="Programmes" />
+    {% endif %}
+    {% if user.role.role_name in dashboard_viewer_roles %}
+        <c-lb.menu.item href="{% url 'impact:dashboard' %}" title="Dashboard" />
+    {% endif %}
+    {% if user.role.role_name in impact_manager_roles %}
+        <c-lb.menu.item href="{% url 'impact:report_list' %}" title="Reports" />
+    {% endif %}
+    {% if user.role.role_name == 'Administrator' %}
+        <c-lb.menu.item href="{% url 'accounts:user_list' %}" title="Users" />
+        <c-lb.menu.item href="{% url 'accounts:audit_log_list' %}" title="Audit Log" />
+    {% endif %}
+
+    <div class="divider mb-2 mt-auto"></div>
+    <form method="post" action="{% url 'accounts:logout' %}" class="m-0 w-full ">
+        <div class="m-2">
+            {% csrf_token %}
+            <c-lb.button modifier="block" btnStyle="soft" icon="rmx.logout-circle" size="sm" type="submit" variant="secondary">Logout</c-lb.button>
+        </div>
+    </form>
+</c-lb.menu>
+
