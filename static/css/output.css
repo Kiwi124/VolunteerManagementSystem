@@ -6877,6 +6877,9 @@
   .p-0 {
     padding: calc(var(--spacing) * 0);
   }
+  .p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
@@ -6967,6 +6970,9 @@
         font-size: 1.375rem;
       }
     }
+  }
+  .pr-4 {
+    padding-right: calc(var(--spacing) * 4);
   }
   .text-center {
     text-align: center;
