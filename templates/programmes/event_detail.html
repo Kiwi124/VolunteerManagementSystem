@@ -1,52 +1,115 @@
 {% extends 'base.html' %}
-{% block title %}Event{% endblock %}
+{% block title %}{{ event.programme.programme_name }}{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Event - {{ event.programme.programme_name }}</h2>
-    <a class="btn btn-outline-secondary btn-sm" href="{% url 'programmes:event_edit' event.event_id %}">Edit</a>
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">{{ event.programme.programme_name }}</c-lb.text>
+    <div>
+        <c-lb.button as="a" href="{% url 'programmes:event_edit' event.event_id %}" variant="primary" icon="rmx.edit" size="sm">Edit Event</c-lb.button>
+        <c-lb.button as="a" href="{% url 'programmes:programme_detail' event.programme_id %}" icon="rmx.arrow-left" variant="accent" size="sm">Back</c-lb.button>
+    </div>
 </div>
-<p>{{ event.event_description }}</p>
-<p><strong>Start:</strong> {{ event.start_date }} &middot; <strong>End:</strong> {{ event.end_date }}</p>
-<p><strong>Status:</strong> {{ event.status.status }} &middot; <strong>Capacity:</strong> {{ event.capacity }}</p>
-<p><strong>Required Skills:</strong>
-    {% for skill in event.required_skills.all %}{{ skill.skill_name }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}
-</p>
 
-<h4 class="mt-4">Assigned Volunteers ({{ assignments.count }}/{{ event.capacity }})</h4>
-<table class="table table-striped">
-    <thead><tr><th>Volunteer</th><th>Role</th><th>Attended</th><th>Reminder Sent</th><th></th></tr></thead>
-    <tbody>
-    {% for a in assignments %}
-        <tr>
-            <td>{{ a.user.person }}</td>
-            <td>{{ a.volunteer_role }}</td>
-            <td>
-                <form method="post" action="{% url 'programmes:assignment_attendance_toggle' a.assignment_id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm {% if a.attendance %}btn-success{% else %}btn-outline-secondary{% endif %}">
-                        {% if a.attendance %}Yes{% else %}No{% endif %}
-                    </button>
-                </form>
-            </td>
-            <td>{% if a.notify_flag %}Yes{% else %}No{% endif %}</td>
-            <td>
-                <form method="post" action="{% url 'programmes:assignment_remove' a.assignment_id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
-                </form>
-            </td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="5">No volunteers assigned yet.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="mb-6 rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Event Details</c-lb.text>
+    <div class="divider m-0"></div>
+    <div class="grid gap-3 md:grid-cols-2">
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Description:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ event.event_description }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Status:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ event.status.status }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Start:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ event.start_date }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">End:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ event.end_date }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Capacity:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ event.capacity }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Required Skills:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">
+                {% for skill in event.required_skills.all %}{{ skill.skill_name }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}
+            </c-lb.text>
+        </div>
+    </div>
+</div>
 
-<h5>Assign a Volunteer</h5>
-<form method="post" action="{% url 'programmes:assignment_add' event.event_id %}" class="row g-2" novalidate>
-    {% csrf_token %}
-    <div class="col-auto">{{ assignment_form.user }}</div>
-    <div class="col-auto">{{ assignment_form.volunteer_role }}</div>
-    <div class="col-auto"><button type="submit" class="btn btn-primary">Assign</button></div>
-</form>
+<div class="rounded-box bg-base-100 p-4 shadow-sm">
+    <div class="flex justify-between items-center mb-3">
+        <c-lb.text size="lg" class="font-semibold">Assigned Volunteers ({{ assignments.count }}/{{ event.capacity }})</c-lb.text>
+    </div>
+    <div class="divider m-0"></div>
+    <div class="overflow-x-auto">
+        <table class="table table-sm w-full text-base">
+            <thead>
+                <tr>
+                    <th>Volunteer</th>
+                    <th>Role</th>
+                    <th>Attended</th>
+                    <th>Reminder Sent</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for a in assignments %}
+                <tr>
+                    <td>{{ a.user.person }}</td>
+                    <td>{{ a.volunteer_role }}</td>
+                    <td>
+                        <form method="post" action="{% url 'programmes:assignment_attendance_toggle' a.assignment_id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if a.attendance %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                                {% if a.attendance %}Yes{% else %}No{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                    <td>{% if a.notify_flag %}Yes{% else %}No{% endif %}</td>
+                    <td>
+                        <form method="post" action="{% url 'programmes:assignment_remove' a.assignment_id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">No volunteers assigned yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-6 rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Assign a Volunteer</c-lb.text>
+    <div class="divider m-0"></div>
+    <form method="post" action="{% url 'programmes:assignment_add' event.event_id %}" novalidate class="mt-4">
+        {% csrf_token %}
+        <div class="grid gap-4 md:grid-cols-[1.5fr_1.2fr_auto] items-end">
+            <c-lb.fieldset>
+                <c-lb.label class="text-base-content mb-0 text-sm">{{ assignment_form.user.label }}</c-lb.label>
+                <c-lb.select name="{{ assignment_form.user.name }}" class="w-full">
+                    {% for value, label in assignment_form.user.field.choices %}
+                        <option value="{{ value }}" {% if assignment_form.user.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </c-lb.select>
+            </c-lb.fieldset>
+            <c-lb.fieldset>
+                <c-lb.label class="text-base-content mb-0 text-sm">{{ assignment_form.volunteer_role.label }}</c-lb.label>
+                <c-lb.input type="text" name="{{ assignment_form.volunteer_role.name }}" value="{{ assignment_form.volunteer_role.value|default:'' }}" class="w-full" />
+            </c-lb.fieldset>
+            <div class="flex justify-start md:justify-end">
+                <c-lb.button type="submit" variant="primary" size="sm">Assign</c-lb.button>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %}

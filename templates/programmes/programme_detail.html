@@ -1,32 +1,65 @@
 {% extends 'base.html' %}
 {% block title %}{{ programme.programme_name }}{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>{{ programme.programme_name }}</h2>
-    <a class="btn btn-outline-secondary btn-sm" href="{% url 'programmes:programme_edit' programme.programme_id %}">Edit</a>
-</div>
-<p>{{ programme.programme_description }}</p>
-<p><strong>Location:</strong> {{ programme.location }} &middot; <strong>Status:</strong> {{ programme.status.status }}</p>
-<p><strong>Dates:</strong> {{ programme.start_date }} - {{ programme.end_date }} &middot; <strong>Cost:</strong> £{{ programme.programme_cost }}</p>
 
-<div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-    <h4>Events</h4>
-    <a class="btn btn-primary btn-sm" href="{% url 'programmes:event_create' programme.programme_id %}">New Event</a>
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">{{ programme.programme_name }}</c-lb.text>
+    <div>
+        <c-lb.button as="a" href="{% url 'programmes:programme_edit' programme.programme_id %}" variant="primary" icon="rmx.edit" size="sm">Edit Programme</c-lb.button>
+        <c-lb.button as="a" href="{% url 'programmes:programme_list' %}" icon="rmx.arrow-left" variant="accent" size="sm">Back</c-lb.button>
+    </div>
 </div>
-<table class="table table-striped">
-    <thead><tr><th>Start</th><th>End</th><th>Status</th><th>Capacity</th><th></th></tr></thead>
-    <tbody>
-    {% for e in events %}
-        <tr>
-            <td>{{ e.start_date }}</td>
-            <td>{{ e.end_date }}</td>
-            <td>{{ e.status.status }}</td>
-            <td>{{ e.capacity }}</td>
-            <td><a href="{% url 'programmes:event_detail' e.event_id %}">View</a></td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="5">No events scheduled yet.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
+
+<div class="mb-6 rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Programme Details</c-lb.text>
+    <div class="divider m-0"></div>
+    <div class="grid gap-3 md:grid-cols-2 mt-4">
+        <div class="md:col-span-2">
+            <c-lb.text size="sm" class="text-base-content/70">Description:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ programme.programme_description }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Location:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ programme.location }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Status:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ programme.status.status }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Dates:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ programme.start_date }} - {{ programme.end_date }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Cost:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">£{{ programme.programme_cost }}</c-lb.text>
+        </div>
+    </div>
+</div>
+
+<div class="rounded-box bg-base-100 p-4 shadow-sm">
+    <div class='flex justify-between items-center mb-3'>
+        <c-lb.text size="lg" class="font-semibold">Events</c-lb.text>
+        <c-lb.button as="a" href="{% url 'programmes:event_create' programme.programme_id %}" variant="primary" size="sm">New Event</c-lb.button>
+    </div>
+    <div class="divider m-0"></div>
+    <div class="overflow-x-auto mt-4">
+        <table class="table table-sm w-full text-base">
+            <thead><tr><th>Start</th><th>End</th><th>Status</th><th>Capacity</th><th></th></tr></thead>
+            <tbody>
+            {% for e in events %}
+                <tr>
+                    <td>{{ e.start_date }}</td>
+                    <td>{{ e.end_date }}</td>
+                    <td>{{ e.status.status }}</td>
+                    <td>{{ e.capacity }}</td>
+                    <td><a href="{% url 'programmes:event_detail' e.event_id %}">View</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">No events scheduled yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

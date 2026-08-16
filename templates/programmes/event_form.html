@@ -1,16 +1,80 @@
 {% extends 'base.html' %}
-{% block title %}Event{% endblock %}
+{% block title %}{% if form.instance.pk %}Edit{% else %}New{% endif %} Event{% endblock %}
 {% block content %}
-<h2>{% if form.instance.pk %}Edit{% else %}New{% endif %} Event - {{ programme.programme_name }}</h2>
-<form method="post" novalidate>
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">{% if form.instance.pk %}Edit{% else %}New{% endif %} Event - {{ programme.programme_name }}</c-lb.text>
+    <c-lb.button as="a" href="{% if form.instance.pk %}{% url 'programmes:event_detail' form.instance.pk %}{% else %}{% url 'programmes:programme_detail' programme.pk %}{% endif %}" icon="rmx.arrow-left" variant="accent" size="sm">Back</c-lb.button>
+</div>
+
+<form method="post" novalidate class="w-full flex flex-col items-center">
     {% csrf_token %}
-    {% for field in form %}
-        <div class="mb-3">
-            <label class="form-label">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
-        </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Save</button>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="grid grid-cols-2 gap-4 flex-1 w-full mb-12">
+        <c-lb.fieldset class="col-span-2">
+            <c-lb.label class="text-base-content mb-0 text-sm">{{ form.event_description.label }}</c-lb.label>
+            <c-lb.textarea name="{{ form.event_description.name }}" class="w-full" rows="3">{{ form.event_description.value|default:'' }}</c-lb.textarea>
+            {% if form.event_description.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.event_description.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">{{ form.start_date.label }}</c-lb.label>
+            <c-lb.input type="datetime-local" name="{{ form.start_date.name }}" value="{{ form.start_date.value|default:'' }}" class="w-full" />
+            {% if form.start_date.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.start_date.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">{{ form.end_date.label }}</c-lb.label>
+            <c-lb.input type="datetime-local" name="{{ form.end_date.name }}" value="{{ form.end_date.value|default:'' }}" class="w-full" />
+            {% if form.end_date.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.end_date.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">{{ form.status.label }}</c-lb.label>
+            <c-lb.select name="{{ form.status.name }}" class="w-full">
+                {% for value, label in form.status.field.choices %}
+                    <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </c-lb.select>
+            {% if form.status.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.status.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">{{ form.capacity.label }}</c-lb.label>
+            <c-lb.input type="number" min="0" name="{{ form.capacity.name }}" value="{{ form.capacity.value|default:'' }}" class="w-full" />
+            {% if form.capacity.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.capacity.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset class="col-span-2">
+            <c-lb.label class="text-base-content mb-0 text-sm">{{ form.required_skills.label }}</c-lb.label>
+            <div class="mt-2 space-y-2">
+                {% for checkbox in form.required_skills %}
+                    <label class="flex items-center gap-2">
+                        {{ checkbox.tag }}
+                        <span>{{ checkbox.choice_label }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+            {% if form.required_skills.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.required_skills.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+    </div>
+
+    <c-lb.button type="submit" modifier="wide" variant="primary" size="md">Save</c-lb.button>
 </form>
 {% endblock %}
