@@ -7,23 +7,26 @@
     <c-lb.button as="a" href="{% url 'volunteers:volunteer_register' %}" variant="primary" size="sm">Register Volunteer</c-lb.button>
 </div>
 
-
-<table class="table table-striped">
-    <thead>
-        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th></th></tr>
-    </thead>
-    <tbody>
-    {% for v in volunteers %}
-        <tr>
-            <td>{{ v.person }}</td>
-            <td>{{ v.email }}</td>
-            <td>{{ v.person.phone_number }}</td>
-            <td>{{ v.get_user_status_display }}</td>
-            <td><a href="{% url 'volunteers:volunteer_detail' v.user_id %}">View</a></td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="5">No volunteers registered yet.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="rounded-box bg-base-100 p-4 shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="table table-sm w-full text-base">
+            <thead>
+                <tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+            {% for v in volunteers %}
+                <tr>
+                    <td>{{ v.person }}</td>
+                    <td>{{ v.email }}</td>
+                    <td>{{ v.person.phone_number }}</td>
+                    <td>{{ v.get_user_status_display }}</td>
+                    <td><a href="{% url 'volunteers:volunteer_detail' v.user_id %}">View</a></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">No volunteers registered yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
