@@ -48,7 +48,7 @@
         <c-lb.text size="lg" class="font-semibold mb-3">DBS Status</c-lb.text>
         <div class="divider m-0"></div>
         <div class="overflow-x-auto">
-            <table class="table table-sm w-full">
+            <c-lb.table class="w-full">
                 <thead><tr><th>Status</th><th>Expiry</th></tr></thead>
                 <tbody>
                 {% for dbs in dbs_statuses %}
@@ -57,7 +57,7 @@
                     <tr><td colspan="2">No DBS record yet.</td></tr>
                 {% endfor %}
                 </tbody>
-            </table>
+            </c-lb.table>
         </div>
 
         <form method="post" action="{% url 'volunteers:dbs_status_add' volunteer.user_id %}" novalidate class="mt-6 space-y-2 flex flex-col">
@@ -85,8 +85,8 @@
     <div class="rounded-box bg-base-100 p-4 shadow-sm h-full flex flex-col">
         <c-lb.text size="lg" class="font-semibold mb-3">Availability</c-lb.text>
         <div class="divider m-0"></div>
-        <div class="overflow-x-auto">
-            <table class="table table-sm w-full">
+            <div class="overflow-x-auto">
+            <c-lb.table class="w-full">
                 <thead><tr><th>Day</th><th>From</th><th>To</th><th></th></tr></thead>
                 <tbody>
                 {% for a in availabilities %}
@@ -97,7 +97,7 @@
                         <td>
                             <form method="post" action="{% url 'volunteers:availability_delete' a.availability_id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
+                                <c-lb.link href="#" class="text-error p-0" onclick="event.preventDefault(); this.closest('form').submit();">Remove</c-lb.link>
                             </form>
                         </td>
                     </tr>
@@ -105,7 +105,7 @@
                     <tr><td colspan="4">No availability recorded.</td></tr>
                 {% endfor %}
                 </tbody>
-            </table>
+            </c-lb.table>
         </div>
 
         
@@ -140,8 +140,8 @@
     <div class="rounded-box bg-base-100 p-4 shadow-sm h-full flex flex-col">
         <c-lb.text size="lg" class="font-semibold mb-3">Skills</c-lb.text>
         <div class="divider m-0"></div>
-        <div class="overflow-x-auto">
-            <table class="table table-sm w-full">
+            <div class="overflow-x-auto">
+            <c-lb.table class="w-full">
                 <thead><tr><th>Skill</th><th>Level</th><th></th></tr></thead>
                 <tbody>
                 {% for s in skills %}
@@ -151,7 +151,7 @@
                         <td>
                             <form method="post" action="{% url 'volunteers:volunteer_skill_delete' s.volunteer_skill_id %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-link text-danger p-0">Remove</button>
+                                <c-lb.link href="#" class="text-error p-0" onclick="event.preventDefault(); this.closest('form').submit();">Remove</c-lb.link>
                             </form>
                         </td>
                     </tr>
@@ -159,7 +159,7 @@
                     <tr><td colspan="3">No skills recorded.</td></tr>
                 {% endfor %}
                 </tbody>
-            </table>
+            </c-lb.table>
         </div>
 
         <form method="post" action="{% url 'volunteers:volunteer_skill_add' volunteer.user_id %}" novalidate class="mt-4 space-y-2 flex flex-col">

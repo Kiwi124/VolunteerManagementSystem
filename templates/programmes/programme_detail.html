@@ -44,7 +44,7 @@
     </div>
     <div class="divider m-0"></div>
     <div class="overflow-x-auto mt-4">
-        <table class="table table-sm w-full text-base">
+        <c-lb.table class="w-full text-base">
             <thead><tr><th>Start</th><th>End</th><th>Status</th><th>Capacity</th><th></th></tr></thead>
             <tbody>
             {% for e in events %}
@@ -53,13 +53,13 @@
                     <td>{{ e.end_date }}</td>
                     <td>{{ e.status.status }}</td>
                     <td>{{ e.capacity }}</td>
-                    <td><a href="{% url 'programmes:event_detail' e.event_id %}">View</a></td>
+                    <td><c-lb.button as="a" href="{% url 'programmes:event_detail' e.event_id %}" variant="ghost" size="sm">View</c-lb.button></td>
                 </tr>
             {% empty %}
                 <tr><td colspan="5">No events scheduled yet.</td></tr>
             {% endfor %}
             </tbody>
-        </table>
+        </c-lb.table>
     </div>
 </div>
 {% endblock %}

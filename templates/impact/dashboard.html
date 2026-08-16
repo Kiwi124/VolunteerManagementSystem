@@ -1,39 +1,73 @@
 {% extends 'base.html' %}
 {% block title %}Impact Dashboard{% endblock %}
 {% block content %}
-<h2>Impact Dashboard</h2>
-<table class="table table-striped w-auto">
-    <tbody>
-        <tr><th>Total Programmes</th><td>{{ metrics.total_programmes }}</td></tr>
-        <tr><th>Total Events</th><td>{{ metrics.total_events }}</td></tr>
-        <tr><th>Total Volunteers</th><td>{{ metrics.total_volunteers }}</td></tr>
-        <tr><th>Total Assignments</th><td>{{ metrics.total_assignments }}</td></tr>
-        <tr><th>Attendance Rate</th><td>{{ metrics.attendance_rate }}%</td></tr>
-        <tr><th>Average Satisfaction Score</th><td>{{ metrics.average_satisfaction }}%</td></tr>
-    </tbody>
-</table>
 
-<h3>Total Programme Cost</h3>
-<form method="get" class="row row-cols-auto g-2 align-items-end mb-3">
-    <div class="col">
-        <label class="form-label" for="range-select">Timeframe</label>
-        <select id="range-select" name="range" class="form-select">
-            {% for value, label in cost_range_choices %}
-            <option value="{{ value }}" {% if value == selected_range %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
-        </select>
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">Impact Dashboard</c-lb.text>
+</div>
+
+<div class="mb-6 rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Key Metrics</c-lb.text>
+    <div class="divider m-0"></div>
+    <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 mt-4">
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Total Programmes</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ metrics.total_programmes }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Total Events</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ metrics.total_events }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Total Volunteers</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ metrics.total_volunteers }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Total Assignments</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ metrics.total_assignments }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Attendance Rate</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ metrics.attendance_rate }}%</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Average Satisfaction Score</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ metrics.average_satisfaction }}%</c-lb.text>
+        </div>
     </div>
-    <div class="col">
-        <label class="form-label" for="start-date">Custom start</label>
-        <input type="date" id="start-date" name="start" class="form-control" value="{{ custom_start|date:'Y-m-d' }}">
+</div>
+
+<div class="mb-6 rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Total Programme Cost</c-lb.text>
+    <div class="divider m-0"></div>
+    <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end mt-4">
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm" for="range-select">Timeframe</c-lb.label>
+            <c-lb.select id="range-select" name="range" class="w-full">
+                {% for value, label in cost_range_choices %}
+                    <option value="{{ value }}" {% if value == selected_range %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </c-lb.select>
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm" for="start-date">Custom start</c-lb.label>
+            <c-lb.input type="date" id="start-date" name="start" class="w-full" value="{{ custom_start|date:'Y-m-d' }}" />
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm" for="end-date">Custom end</c-lb.label>
+            <c-lb.input type="date" id="end-date" name="end" class="w-full" value="{{ custom_end|date:'Y-m-d' }}" />
+        </c-lb.fieldset>
+
+        <div class="flex items-center">
+            <c-lb.button type="submit" variant="primary" size="sm">Apply</c-lb.button>
+        </div>
+    </form>
+
+    <div class="mt-4">
+        <c-lb.text size="xl" class="font-semibold">&pound;{{ total_cost|floatformat:2 }}</c-lb.text>
     </div>
-    <div class="col">
-        <label class="form-label" for="end-date">Custom end</label>
-        <input type="date" id="end-date" name="end" class="form-control" value="{{ custom_end|date:'Y-m-d' }}">
-    </div>
-    <div class="col">
-        <button type="submit" class="btn btn-primary">Apply</button>
-    </div>
-</form>
-<p class="fs-4">&pound;{{ total_cost|floatformat:2 }}</p>
+</div>
+
 {% endblock %}
