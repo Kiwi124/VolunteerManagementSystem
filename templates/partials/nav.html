@@ -10,6 +10,9 @@
         <div class="divider m-0"></div>
     </div>
     <c-lb.menu.item href="{% url 'accounts:dashboard' %}" title="Home" />
+    {% if user.role.role_name == 'Volunteer' %}
+        <c-lb.menu.item href="{% url 'volunteers:my_events' %}" title="My Events" />
+    {% endif %}
     {% if user.role.role_name in volunteer_manager_roles %}
         <c-lb.menu.item href="{% url 'volunteers:volunteer_list' %}" title="Volunteers" />
         <c-lb.menu.item href="{% url 'volunteers:skill_list' %}" title="Skills" />

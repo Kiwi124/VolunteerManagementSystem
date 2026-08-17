@@ -1,8 +1,12 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from accounts.decorators import role_required
 from accounts.models import Role, User
+from programmes.models import Event, VolunteerAssignment
 from volunteers.forms import (
     AvailabilityForm,
     DBSStatusForm,
@@ -136,3 +140,32 @@ def skill_list(request):
     else:
         form = SkillForm()
     return render(request, 'volunteers/skill_list.html', {'skills': skills, 'form': form})
+
+
+@login_required
+def my_events(request):
+    """View for volunteers to see their upcoming and past events."""
+    now = timezone.now()
+    
+    # Get all assignments for the current user
+    assignments = request.user.assignments.select_related(
+        'event__programme', 'event__status'
+    ).order_by('event__start_date')
+    
+    # Separate upcoming and past events
+    upcoming_assignments = [
+        a for a in assignments if a.event.start_date > now
+    ]
+    past_assignments = [
+        a for a in assignments if a.event.end_date <= now
+    ]
+    
+    # Sort past events by most recent first
+    past_assignments.sort(key=lambda x: x.event.end_date, reverse=True)
+    
+    context = {
+        'upcoming_assignments': upcoming_assignments,
+        'past_assignments': past_assignments,
+    }
+    return render(request, 'volunteers/my_events.html', context)
+

@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block title %}My Events{% endblock %}
+{% block content %}
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">My Events</c-lb.text>
+</div>
+
+<!-- Upcoming Events Section -->
+<div class="mb-8 rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Upcoming Events</c-lb.text>
+    <div class="divider m-0"></div>
+    
+    {% if upcoming_assignments %}
+        <div class="space-y-4 mt-4">
+            {% for assignment in upcoming_assignments %}
+                <div class="border-l-4 border-primary pl-4">
+                    <c-lb.text size="md" class="font-semibold">{{ assignment.event.programme.programme_name }}</c-lb.text>
+                    
+                    <div class="grid gap-3 md:grid-cols-2 mt-3">
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Description:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.event_description }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Status:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.status.status }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Start:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.start_date }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">End:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.end_date }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Location:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.programme.location }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Your Role:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.volunteer_role|default:"Not specified" }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Required Skills:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">
+                                {% for skill in assignment.event.required_skills.all %}{{ skill.skill_name }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}
+                            </c-lb.text>
+                        </div>
+                    </div>
+                    
+
+                </div>
+                {% if not forloop.last %}
+                    <div class="divider m-0"></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <c-lb.text size="sm" class="text-base-content/70 mt-4">You have no upcoming events scheduled.</c-lb.text>
+    {% endif %}
+</div>
+
+<!-- Past Events Section -->
+<div class="rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Event History</c-lb.text>
+    <div class="divider m-0"></div>
+    
+    {% if past_assignments %}
+        <div class="space-y-4 mt-4">
+            {% for assignment in past_assignments %}
+                <div class="border-l-4 border-base-300 pl-4">
+                    <c-lb.text size="md" class="font-semibold">{{ assignment.event.programme.programme_name }}</c-lb.text>
+                    
+                    <div class="grid gap-3 md:grid-cols-2 mt-3">
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Description:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.event_description }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Status:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.status.status }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Start:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.start_date }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">End:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.end_date }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Location:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.event.programme.location }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Your Role:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">{{ assignment.volunteer_role|default:"Not specified" }}</c-lb.text>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Attended:</c-lb.text>
+                            <c-lb.badge variant="{% if assignment.attendance %}success{% else %}warning{% endif %}">
+                                {% if assignment.attendance %}Yes{% else %}No{% endif %}
+                            </c-lb.badge>
+                        </div>
+                        <div>
+                            <c-lb.text size="sm" class="text-base-content/70">Required Skills:</c-lb.text>
+                            <c-lb.text size="sm" class="font-medium">
+                                {% for skill in assignment.event.required_skills.all %}{{ skill.skill_name }}{% if not forloop.last %}, {% endif %}{% empty %}None{% endfor %}
+                            </c-lb.text>
+                        </div>
+                    </div>
+                    
+                </div>
+                {% if not forloop.last %}
+                    <div class="divider m-0"></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <c-lb.text size="sm" class="text-base-content/70 mt-4">You have no past events.</c-lb.text>
+    {% endif %}
+</div>
+
+{% endblock %}

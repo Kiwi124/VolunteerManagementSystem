@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.volunteer_list, name='volunteer_list'),
     path('register/', views.volunteer_register, name='volunteer_register'),
     path('skills/', views.skill_list, name='skill_list'),
+    path('my-events/', views.my_events, name='my_events'),
     path('<int:user_id>/', views.volunteer_detail, name='volunteer_detail'),
     path('<int:user_id>/edit/', views.person_edit, name='person_edit'),
     path('<int:user_id>/dbs/add/', views.dbs_status_add, name='dbs_status_add'),

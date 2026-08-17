@@ -8,6 +8,16 @@
 </div>
 
 <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+    {% if user.role.role_name == 'Volunteer' %}
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>My Events</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">View upcoming events and history</c-lb.text>
+            <div class="mt-4"><c-lb.button as="a" href="{% url 'volunteers:my_events' %}" variant="primary">Open</c-lb.button></div>
+        </c-lb.card.body>
+    </c-lb.card>
+    {% endif %}
+
     {% if user.role.role_name in volunteer_manager_roles %}
     <c-lb.card border class="h-full">
         <c-lb.card.body>
