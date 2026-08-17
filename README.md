@@ -12,6 +12,44 @@ Prerequisites
 - Python 3.13
 - MySQL Server (running locally, with a root/admin account you can create databases with)
 - Git
+- Node.js v24.19.0
+
+Installing Node.js
+===================
+https://nodejs.org/en/download
+
+Recommended (Windows):
+```
+# Download and install Chocolatey:
+powershell -c "irm https://community.chocolatey.org/install.ps1|iex"
+
+# Download and install Node.js:
+choco install nodejs --version="24.19.0"
+
+# Verify the Node.js version:
+node -v # Should print "v24.19.0".
+
+# Verify npm version:
+npm -v # Should print "11.17.0".
+```
+
+Recommended (Mac/Linux):
+```
+# Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
+
+# in lieu of restarting the shell
+\. "$HOME/.nvm/nvm.sh"
+
+# Download and install Node.js:
+nvm install 24
+
+# Verify the Node.js version:
+node -v # Should print "v24.19.0".
+
+# Verify npm version:
+npm -v # Should print "11.17.0".
+```
 
 1. Clone the repository
 ------------------------
@@ -75,8 +113,14 @@ If no dump is provided or you'd rather start from a clean database, run migratio
 python manage.py migrate
 ```
 
-6. Run the development server
+7. Run the development server
 --------------------------------
+In a terminal run: 
+```
+labb dev
+```
+
+In a new terminal run:
 ```
 python manage.py runserver
 ```

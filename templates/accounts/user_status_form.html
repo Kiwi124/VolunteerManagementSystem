@@ -1,16 +1,45 @@
 {% extends 'base.html' %}
 {% block title %}Edit User{% endblock %}
 {% block content %}
-<h2>Edit User - {{ user_obj.person }}</h2>
-<form method="post" novalidate>
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">Edit {{ user_obj.person }}</c-lb.text>
+    <c-lb.button as="a" href="{% url 'accounts:user_list' %}" icon="rmx.arrow-left" variant="accent" size="sm">Back</c-lb.button>
+</div>
+
+<form method="post" novalidate class="w-full flex flex-col items-center">
     {% csrf_token %}
-    {% for field in form %}
-        <div class="mb-3">
-            <label class="form-label">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
-        </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Save</button>
+
+    {% if form.non_field_errors %}
+        <c-lb.text size="sm" class="text-error mb-4">{{ form.non_field_errors }}</c-lb.text>
+    {% endif %}
+
+    <div class="grid grid-cols-2 gap-4 flex-1 w-full mb-12">
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Role</c-lb.label>
+            <c-lb.select name="{{ form.role.name }}" class="w-full">
+                {% for r in form.role.field.queryset %}
+                    <option value="{{ r.pk }}" {% if form.role.value|stringformat:'s' == r.pk|stringformat:'s' %}selected{% endif %}>{{ r.role_name }}</option>
+                {% endfor %}
+            </c-lb.select>
+            {% if form.role.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.role.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Status</c-lb.label>
+            <c-lb.select name="{{ form.user_status.name }}" class="w-full">
+                {% for value, label in form.user_status.field.choices %}
+                    <option value="{{ value }}" {% if form.user_status.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </c-lb.select>
+            {% if form.user_status.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.user_status.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+    </div>
+
+    <c-lb.button type="submit" modifier="wide" variant="primary" size="md">Save</c-lb.button>
 </form>
 {% endblock %}

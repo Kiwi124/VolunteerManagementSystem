@@ -1,18 +1,47 @@
 {% extends 'base.html' %}
 {% block title %}{{ report.report_name }}{% endblock %}
 {% block content %}
-<h2>{{ report.report_name }}</h2>
-<p><strong>Programme:</strong> {{ report.programme.programme_name }} &middot; <strong>Date:</strong> {{ report.report_date }}</p>
-<p><strong>Satisfaction Score:</strong> {{ report.satisfaction_score }}%</p>
 
-<h4 class="mt-4">Programme Metrics</h4>
-<table class="table table-striped w-auto">
-    <tbody>
-        <tr><th>Events</th><td>{{ metrics.events_count }}</td></tr>
-        <tr><th>Volunteers Assigned</th><td>{{ metrics.unique_volunteers }}</td></tr>
-        <tr><th>Total Assignments</th><td>{{ metrics.total_assignments }}</td></tr>
-        <tr><th>Attended</th><td>{{ metrics.attended_count }}</td></tr>
-        <tr><th>Attendance Rate</th><td>{{ metrics.attendance_rate }}%</td></tr>
-    </tbody>
-</table>
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">{{ report.report_name }}</c-lb.text>
+    <div>
+        <c-lb.button as="a" href="{% url 'impact:report_list' %}" icon="rmx.arrow-left" variant="accent" size="sm">Back</c-lb.button>
+    </div>
+</div>
+
+<div class="mb-6 rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold mb-3">Report Summary</c-lb.text>
+    <div class="divider m-0"></div>
+    <div class="grid gap-3 md:grid-cols-2 mt-4">
+        <div class="md:col-span-2">
+            <c-lb.text size="sm" class="text-base-content/70">Programme:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ report.programme.programme_name }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Date:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ report.report_date }}</c-lb.text>
+        </div>
+        <div>
+            <c-lb.text size="sm" class="text-base-content/70">Satisfaction Score:</c-lb.text>
+            <c-lb.text size="sm" class="font-medium">{{ report.satisfaction_score }}%</c-lb.text>
+        </div>
+    </div>
+</div>
+
+<div class="rounded-box bg-base-100 p-4 shadow-sm">
+    <c-lb.text size="lg" class="font-semibold">Programme Metrics</c-lb.text>
+    <div class="divider m-0"></div>
+    <div class="overflow-x-auto mt-4">
+        <c-lb.table class="w-auto">
+            <tbody>
+                <tr><th>Events</th><td>{{ metrics.events_count }}</td></tr>
+                <tr><th>Volunteers Assigned</th><td>{{ metrics.unique_volunteers }}</td></tr>
+                <tr><th>Total Assignments</th><td>{{ metrics.total_assignments }}</td></tr>
+                <tr><th>Attended</th><td>{{ metrics.attended_count }}</td></tr>
+                <tr><th>Attendance Rate</th><td>{{ metrics.attendance_rate }}%</td></tr>
+            </tbody>
+        </c-lb.table>
+    </div>
+</div>
+
 {% endblock %}
