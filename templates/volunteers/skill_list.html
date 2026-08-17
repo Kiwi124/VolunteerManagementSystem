@@ -1,32 +1,55 @@
 {% extends 'base.html' %}
 {% block title %}Skills Catalogue{% endblock %}
 {% block content %}
-<h2>Skills Catalogue</h2>
-<div class="row">
-    <div class="col-md-6">
-        <table class="table table-striped">
-            <thead><tr><th>Name</th><th>Description</th></tr></thead>
-            <tbody>
-            {% for skill in skills %}
-                <tr><td>{{ skill.skill_name }}</td><td>{{ skill.skill_description }}</td></tr>
-            {% empty %}
-                <tr><td colspan="2">No skills defined yet.</td></tr>
-            {% endfor %}
-            </tbody>
-        </table>
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">Skills Catalogue</c-lb.text>
+</div>
+
+<div class="grid gap-6 lg:grid-cols-2">
+    <div class="rounded-box bg-base-100 p-4 shadow-sm">
+        <c-lb.text size="lg" class="font-semibold mb-3">Skills</c-lb.text>
+        <div class="divider m-0"></div>
+        <div class="overflow-x-auto mt-4">
+            <c-lb.table class="w-full">
+                <thead>
+                    <tr><th>Name</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                {% for skill in skills %}
+                    <tr>
+                        <td>{{ skill.skill_name }}</td>
+                        <td>{{ skill.skill_description }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="2">No skills defined yet.</td></tr>
+                {% endfor %}
+                </tbody>
+            </c-lb.table>
+        </div>
     </div>
-    <div class="col-md-6">
-        <h5>Add Skill</h5>
-        <form method="post" novalidate>
+
+    <div class="rounded-box bg-base-100 p-4 shadow-sm">
+        <c-lb.text size="lg" class="font-semibold mb-3">Add Skill</c-lb.text>
+        <div class="divider m-0"></div>
+        <form method="post" novalidate class="mt-4 space-y-3">
             {% csrf_token %}
             {% for field in form %}
-                <div class="mb-3">
-                    <label class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
-                </div>
+                <c-lb.fieldset>
+                    <c-lb.label class="text-base-content mb-0 text-sm">{{ field.label }}</c-lb.label>
+                    {% if field.field.widget.input_type == 'textarea' %}
+                        <c-lb.textarea name="{{ field.name }}" class="w-full" rows="3">{{ field.value|default:'' }}</c-lb.textarea>
+                    {% else %}
+                        <c-lb.input type="text" name="{{ field.name }}" value="{{ field.value|default:'' }}" class="w-full" />
+                    {% endif %}
+                    {% if field.errors %}
+                        <c-lb.text size="sm" class="text-error mt-1">{{ field.errors|join:", " }}</c-lb.text>
+                    {% endif %}
+                </c-lb.fieldset>
             {% endfor %}
-            <button type="submit" class="btn btn-primary">Add Skill</button>
+            <div class="flex justify-center">
+                <c-lb.button type="submit" variant="primary" size="sm">Add Skill</c-lb.button>
+            </div>
         </form>
     </div>
 </div>

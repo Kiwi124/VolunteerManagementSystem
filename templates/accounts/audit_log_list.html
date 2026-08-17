@@ -1,20 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}Audit Log{% endblock %}
 {% block content %}
-<h2>Audit Log</h2>
-<table class="table table-striped">
-    <thead>
-        <tr><th>Timestamp</th><th>User</th><th>Action</th><th>Entity Affected</th></tr>
-    </thead>
-    <tbody>
-    {% for log in logs %}
-        <tr>
-            <td>{{ log.timestamp }}</td>
-            <td>{{ log.user|default:"-" }}</td>
-            <td>{{ log.action_performed }}</td>
-            <td>{{ log.entity_affected }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">Audit Log</c-lb.text>
+    <div></div>
+</div>
+
+<div class="rounded-box bg-base-100 p-4 shadow-sm">
+    <div class="overflow-x-auto">
+        <c-lb.table class="w-full text-base">
+            <thead>
+                <tr><th>Timestamp</th><th>User</th><th>Action</th><th>Entity Affected</th></tr>
+            </thead>
+            <tbody>
+            {% for log in logs %}
+                <tr>
+                    <td>{{ log.timestamp }}</td>
+                    <td>{{ log.user|default:"-" }}</td>
+                    <td>{{ log.action_performed }}</td>
+                    <td>{{ log.entity_affected }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">No audit entries yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </c-lb.table>
+    </div>
+</div>
+
 {% endblock %}

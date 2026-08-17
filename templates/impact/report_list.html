@@ -1,24 +1,39 @@
 {% extends 'base.html' %}
 {% block title %}Reports{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Impact Reports</h2>
-    <a class="btn btn-primary" href="{% url 'impact:report_create' %}">New Report</a>
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">Impact Reports</c-lb.text>
+    <div>
+        <c-lb.button as="a" href="{% url 'impact:report_create' %}" variant="primary" size="sm">New Report</c-lb.button>
+    </div>
 </div>
-<table class="table table-striped">
-    <thead><tr><th>Name</th><th>Programme</th><th>Date</th><th>Satisfaction</th><th></th></tr></thead>
-    <tbody>
-    {% for r in reports %}
-        <tr>
-            <td>{{ r.report_name }}</td>
-            <td>{{ r.programme.programme_name }}</td>
-            <td>{{ r.report_date }}</td>
-            <td>{{ r.satisfaction_score }}%</td>
-            <td><a href="{% url 'impact:report_detail' r.report_id %}">View</a></td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="5">No reports yet.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
+
+    <div class="rounded-box bg-base-100 p-4 shadow-sm">
+    <div class="overflow-x-auto">
+        <c-lb.table class="w-full text-base">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Programme</th>
+                    <th>Date</th>
+                    <th>Satisfaction</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in reports %}
+                <tr>
+                    <td>{{ r.report_name }}</td>
+                    <td>{{ r.programme.programme_name }}</td>
+                    <td>{{ r.report_date }}</td>
+                    <td>{{ r.satisfaction_score }}%</td>
+                    <td><c-lb.button as="a" href="{% url 'impact:report_detail' r.report_id %}" variant="ghost" size="sm">View</c-lb.button></td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">No reports yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </c-lb.table>
+    </div>
+</div>
 {% endblock %}

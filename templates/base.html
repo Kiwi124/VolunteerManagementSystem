@@ -1,49 +1,43 @@
+{% load lb_tags %}
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}VIMS{% endblock %} - UrbanConnect VIMS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'accounts:dashboard' %}">UrbanConnect VIMS</a>
+<html lang="en" {% labb_theme %}>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}VIMS{% endblock %} - UrbanConnect VIMS</title>
+        <c-lb.m.dependencies />
+    </head>
+
+    <body class="flex flex-col w-screen h-screen">
         {% if user.is_authenticated %}
-        <div class="d-flex align-items-center">
-            <span class="navbar-text text-light me-3">{{ user.person }} &middot; {{ user.role.role_name }}</span>
-            {% if user.role.role_name in volunteer_manager_roles %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'volunteers:volunteer_list' %}">Volunteers</a>
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'volunteers:skill_list' %}">Skills</a>
-            {% endif %}
-            {% if user.role.role_name in programme_manager_roles %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'programmes:programme_list' %}">Programmes</a>
-            {% endif %}
-            {% if user.role.role_name in dashboard_viewer_roles %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'impact:dashboard' %}">Dashboard</a>
-            {% endif %}
-            {% if user.role.role_name in impact_manager_roles %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'impact:report_list' %}">Reports</a>
-            {% endif %}
-            {% if user.role.role_name == 'Administrator' %}
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'accounts:user_list' %}">Users</a>
-            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'accounts:audit_log_list' %}">Audit Log</a>
-            {% endif %}
-            <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-            </form>
-        </div>
+            {% include 'partials/header.html' %}
+            <div class="flex h-[calc(100vh-5rem)] w-full items-stretch">
+                <aside class="shrink-0 h-full flex flex-col">
+                    {% include 'partials/nav.html' %}
+                </aside>
+                <main class="flex-1 min-w-0 px-8 h-full">
         {% endif %}
-    </div>
-</nav>
-<div class="container mt-4">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    {% block content %}{% endblock %}
-</div>
-</body>
+        <div class="w-full">
+            {% if messages %}
+                <div class="mb-6 space-y-3">
+                    {% for message in messages %}
+                        <div class="js-dismissible-alert">
+                            <c-lb.alert variant="{{ message.tags|default:'info' }}" icon="rmx.information" class="w-full items-center justify-between">
+                                <div class="pr-4">{{ message }}</div>
+                                <c-slot name="actions">
+                                    <c-lb.button btnStyle="ghost" size="sm" type="button" aria-label="Dismiss message" onclick="this.closest('.js-dismissible-alert').remove()">Dismiss</c-lb.button>
+                                </c-slot>
+                            </c-lb.alert>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+        {% if user.is_authenticated %}
+                </main>
+            </div>
+        {% endif %}
+    </body>
 </html>

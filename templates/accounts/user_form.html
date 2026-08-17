@@ -1,16 +1,101 @@
 {% extends 'base.html' %}
-{% block title %}New User{% endblock %}
+{% block title %}Register User{% endblock %}
 {% block content %}
-<h2>New User</h2>
-<form method="post" novalidate>
+
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">Register User</c-lb.text>
+    <c-lb.button as="a" href="{% url 'accounts:user_list' %}" icon="rmx.arrow-left" variant="accent" size="sm">Back</c-lb.button>
+</div>
+
+<form method="post" novalidate class="w-full flex flex-col items-center">
     {% csrf_token %}
-    {% for field in form %}
-        <div class="mb-3">
-            <label class="form-label">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
-        </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Create</button>
+
+    {% if form.non_field_errors %}
+        <c-lb.text size="sm" class="text-error mb-4">{{ form.non_field_errors }}</c-lb.text>
+    {% endif %}
+
+    <div class="grid grid-cols-2 gap-4 flex-1 w-full mb-12">
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Forename</c-lb.label>
+            <c-lb.input type="text" name="{{ form.forename.name }}" value="{{ form.forename.value|default:'' }}" class="w-full" />
+            {% if form.forename.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.forename.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Surname</c-lb.label>
+            <c-lb.input type="text" name="{{ form.surname.name }}" value="{{ form.surname.value|default:'' }}" class="w-full" />
+            {% if form.surname.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.surname.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset class="col-span-2">
+            <c-lb.label class="text-base-content mb-0 text-sm">Email</c-lb.label>
+            <c-lb.input type="email" name="{{ form.email.name }}" value="{{ form.email.value|default:'' }}" class="w-full" />
+            {% if form.email.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.email.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Password</c-lb.label>
+            <c-lb.input type="password" name="{{ form.password.name }}" value="{{ form.password.value|default:'' }}" class="w-full" />
+            {% if form.password.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.password.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Phone number</c-lb.label>
+            <c-lb.input type="text" name="{{ form.phone_number.name }}" value="{{ form.phone_number.value|default:'' }}" class="w-full" />
+            {% if form.phone_number.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.phone_number.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset class="col-span-2">
+            <c-lb.label class="text-base-content mb-0 text-sm">Address</c-lb.label>
+            <c-lb.textarea name="{{ form.address.name }}" class="w-full" rows="3">{{ form.address.value|default:'' }}</c-lb.textarea>
+            {% if form.address.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.address.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Emergency contact</c-lb.label>
+            <c-lb.input type="text" name="{{ form.emergency_contact.name }}" value="{{ form.emergency_contact.value|default:'' }}" class="w-full" />
+            {% if form.emergency_contact.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.emergency_contact.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Notification preference</c-lb.label>
+            <c-lb.select name="{{ form.notification_preference.name }}" class="w-full">
+                {% for value, label in form.notification_preference.field.choices %}
+                    <option value="{{ value }}" {% if form.notification_preference.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </c-lb.select>
+            {% if form.notification_preference.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.notification_preference.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+
+        <c-lb.fieldset>
+            <c-lb.label class="text-base-content mb-0 text-sm">Role</c-lb.label>
+            <c-lb.select name="{{ form.role.name }}" class="w-full">
+                {% for r in form.role.field.queryset %}
+                    <option value="{{ r.pk }}" {% if form.role.value|stringformat:'s' == r.pk|stringformat:'s' %}selected{% endif %}>{{ r.role_name }}</option>
+                {% endfor %}
+            </c-lb.select>
+            {% if form.role.errors %}
+                <c-lb.text size="sm" class="text-error mt-1">{{ form.role.errors|join:", " }}</c-lb.text>
+            {% endif %}
+        </c-lb.fieldset>
+    </div>
+
+    <c-lb.button type="submit" modifier="wide" variant="primary" size="md">Create</c-lb.button>
 </form>
 {% endblock %}

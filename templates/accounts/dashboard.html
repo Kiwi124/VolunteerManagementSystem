@@ -1,55 +1,138 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<h2>Welcome, {{ user.person.forename }}</h2>
-<p class="text-muted">Role: {{ user.role.role_name }}</p>
 
-{% if user.role.role_name == 'Administrator' %}
-<hr>
-<h3>System Backup</h3>
-<form id="backup-form">
-    {% csrf_token %}
-    <button type="submit" id="backup-button" class="btn btn-warning">Run Backup</button>
-</form>
-<div class="progress mt-2" style="max-width: 300px; display: none;" id="backup-progress-wrapper">
-    <div class="progress-bar" id="backup-progress" role="progressbar" style="width: 0%">0%</div>
+<div class='flex justify-between items-center mb-4'>
+    <c-lb.text size="3xl" class="font-semibold">Welcome, {{ user.person.forename }}</c-lb.text>
+    <c-lb.text size="sm" class="text-base-content/70">Role: {{ user.role.role_name }}</c-lb.text>
 </div>
-<div class="alert alert-success mt-2" id="backup-complete-message" style="display: none;">Backup complete.</div>
+
+<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+    {% if user.role.role_name in volunteer_manager_roles %}
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>Volunteers</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">Manage volunteers and registrations</c-lb.text>
+            <div class="mt-4"><c-lb.button as="a" href="{% url 'volunteers:volunteer_list' %}" variant="primary">Open</c-lb.button></div>
+        </c-lb.card.body>
+    </c-lb.card>
+
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>Skills</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">Manage skill catalogue</c-lb.text>
+            <div class="mt-4"><c-lb.button as="a" href="{% url 'volunteers:skill_list' %}" variant="primary">Open</c-lb.button></div>
+        </c-lb.card.body>
+    </c-lb.card>
+    {% endif %}
+
+    {% if user.role.role_name in programme_manager_roles %}
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>Programmes</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">View and edit programmes</c-lb.text>
+            <div class="mt-4"><c-lb.button as="a" href="{% url 'programmes:programme_list' %}" variant="primary">Open</c-lb.button></div>
+        </c-lb.card.body>
+    </c-lb.card>
+    {% endif %}
+
+    {% if user.role.role_name in dashboard_viewer_roles %}
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>Impact Dashboard</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">View impact metrics and filters</c-lb.text>
+            <div class="mt-4"><c-lb.button as="a" href="{% url 'impact:dashboard' %}" variant="primary">Open</c-lb.button></div>
+        </c-lb.card.body>
+    </c-lb.card>
+    {% endif %}
+
+    {% if user.role.role_name in impact_manager_roles %}
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>Reports</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">View and manage reports</c-lb.text>
+            <div class="mt-4"><c-lb.button as="a" href="{% url 'impact:report_list' %}" variant="primary">Open</c-lb.button></div>
+        </c-lb.card.body>
+    </c-lb.card>
+    {% endif %}
+
+    {% if user.role.role_name == 'Administrator' %}
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>Users</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">Manage users and roles</c-lb.text>
+            <div class="mt-4"><c-lb.button as="a" href="{% url 'accounts:user_list' %}" variant="primary">Open</c-lb.button></div>
+        </c-lb.card.body>
+    </c-lb.card>
+
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>Audit Log</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">View system audit trail</c-lb.text>
+            <div class="mt-4"><c-lb.button as="a" href="{% url 'accounts:audit_log_list' %}" variant="primary">Open</c-lb.button></div>
+        </c-lb.card.body>
+    </c-lb.card>
+    {% endif %}
+
+    {% if user.role.role_name == 'Administrator' %}
+    <c-lb.card border class="h-full">
+        <c-lb.card.body>
+            <c-lb.card.title>System Backup</c-lb.card.title>
+            <c-lb.text size="sm" class="text-base-content/70">Run a manual system backup</c-lb.text>
+            <div class="mt-4">
+                <form id="backup-form" class="m-0">
+                    {% csrf_token %}
+                    <c-lb.button id="backup-button" type="submit" variant="warning">Run Backup</c-lb.button>
+                </form>
+                <div id="backup-progress-wrapper" class="mt-3 w-72 hidden">
+                    <div class="w-full bg-base-200 rounded overflow-hidden">
+                        <div id="backup-progress" class="bg-primary text-white text-center text-sm" style="width:0%">0%</div>
+                    </div>
+                </div>
+                <c-lb.text id="backup-complete-message" size="sm" class="text-success mt-2 hidden">Backup complete.</c-lb.text>
+            </div>
+        </c-lb.card.body>
+    </c-lb.card>
+    {% endif %}
+</div>
 
 <script>
-document.getElementById('backup-form').addEventListener('submit', function (event) {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', function () {
+    var backupForm = document.getElementById('backup-form');
+    if (!backupForm) return;
+    backupForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var button = document.getElementById('backup-button');
+        var wrapper = document.getElementById('backup-progress-wrapper');
+        var bar = document.getElementById('backup-progress');
+        var completeMessage = document.getElementById('backup-complete-message');
+        var csrfToken = backupForm.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    var button = document.getElementById('backup-button');
-    var wrapper = document.getElementById('backup-progress-wrapper');
-    var bar = document.getElementById('backup-progress');
-    var completeMessage = document.getElementById('backup-complete-message');
-    var csrfToken = event.target.querySelector('[name=csrfmiddlewaretoken]').value;
+        button.disabled = true;
+        completeMessage.classList.add('hidden');
+        wrapper.classList.remove('hidden');
+        bar.style.width = '0%';
+        bar.textContent = '0%';
 
-    button.disabled = true;
-    completeMessage.style.display = 'none';
-    wrapper.style.display = 'block';
-    bar.style.width = '0%';
-    bar.textContent = '0%';
-
-    var progress = 0;
-    var interval = setInterval(function () {
-        progress += 10;
-        bar.style.width = progress + '%';
-        bar.textContent = progress + '%';
-        if (progress >= 100) {
-            clearInterval(interval);
-            fetch('{% url "accounts:trigger_backup" %}', {
-                method: 'POST',
-                headers: { 'X-CSRFToken': csrfToken },
-            }).then(function () {
-                wrapper.style.display = 'none';
-                completeMessage.style.display = 'block';
-                button.disabled = false;
-            });
-        }
-    }, 200);
+        var progress = 0;
+        var interval = setInterval(function () {
+            progress += 10;
+            bar.style.width = progress + '%';
+            bar.textContent = progress + '%';
+            if (progress >= 100) {
+                clearInterval(interval);
+                fetch('{% url "accounts:trigger_backup" %}', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': csrfToken },
+                }).then(function () {
+                    wrapper.classList.add('hidden');
+                    completeMessage.classList.remove('hidden');
+                    button.disabled = false;
+                });
+            }
+        }, 200);
+    });
 });
 </script>
-{% endif %}
+
 {% endblock %}
